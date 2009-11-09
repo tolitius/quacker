@@ -1,0 +1,7 @@
+<div id="message${status.id}" style="border 1px solid gray; padding:10px;">
+
+  <strong>
+    ${status.quacker.userRealName} quacked...
+  </strong>
+
+</div>

@@ -1,0 +1,37 @@
+class StatusController {
+
+    def index = { 
+      [messages:findStatusMessages()]
+    }
+
+    def update = {
+      def status = new Status( params )
+      status.quacker = lookUpQuacker()
+      status.save()
+
+      render template:"message", model:[status:status]
+    }
+
+    private lookUpQuacker() {
+    	User.findByUsername( principalInfo.username )
+    }
+
+    private findStatusMessages() {
+        def qer = lookUpQuacker()
+
+        def messages = Status.withCriteria {
+          or {
+            quacker { 
+              eq('username', qer.username)
+            }
+            if (qer.following) {
+              inList("quacker", qer.following)
+            }
+          }
+          maxResults 10
+          order 'dateCreated', 'desc'
+        }
+
+        return messages
+    }
+}
